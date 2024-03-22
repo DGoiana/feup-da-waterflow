@@ -1,11 +1,9 @@
 #include "Graph.h"
 
-Graph::Graph();
-
 template <class T>
-Graph<T>::Graph(std::unordered_map<string, Node<T>*> nodes){
+Graph<T>::Graph(std::unordered_map<std::string, Node<T>*> nodes){
    this->nodes = nodes;
 }
 
 template <class T>
-vector<Node<T>*> getNodeSet() const { return this->nodes; };
+std::vector<Node<T>*> Graph<T>::getNodeSet() const { return this->nodes; };

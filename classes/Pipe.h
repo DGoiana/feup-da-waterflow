@@ -1,4 +1,5 @@
-#include "Node.h"
+template <class T>
+class Node;
 
 template <class T>
 class Pipe {
@@ -12,6 +13,4 @@ class Pipe {
       double getCapacity() const;
       void setCapacity(double capacity);
 
-   friend class Graph<T>;
-	friend class Node<T>;
 };

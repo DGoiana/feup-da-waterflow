@@ -1,10 +1,13 @@
-#include "Pipe.h"
+#include <vector>
+
+template <class T>
+class Pipe;
 
 template <class T>
 class Node{
    private:
       T type;
-      std::vector<Pipe<T>*> pipes;
+      std::vector<Pipe<T> *> pipes;
       bool visited;
       bool processing;
       int inDegree;
@@ -35,8 +38,7 @@ class Node{
       int getNum() const;
       int getLow() const;
 
-      vector<Pipe<T>*> getPipes() const;
-      void setPipes(const vector<Pipe<T>*> pipes);
+      std::vector<Pipe<T> *> getPipes() const;
+      void setPipes(const std::vector<Pipe<T>*> pipes);
 
-      friend class Graph<T>;
 };

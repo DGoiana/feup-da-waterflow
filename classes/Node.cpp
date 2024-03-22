@@ -16,7 +16,7 @@ template <class T>
 bool Node<T>::isVisited() const { return visited; };
 
 template <class T>
-void Node<T>::setVisited(bool v) { this->visited = v};
+void Node<T>::setVisited(bool v) { this->visited = v;};
 
 template <class T>
 bool Node<T>::isProcessing() const { return this->processing; }
@@ -43,7 +43,7 @@ template <class T>
 int Node<T>::getLow() const { return this->low; }
 
 template <class T>
-std::vector<Pipe<T>*> Node<T>::getPipes() const { return this->pipes }
+std::vector<Pipe<T>*> Node<T>::getPipes() const { return this->pipes; }
 
 template <class T>
-void Node<T>::setPipes(const std::vector<Pipe<T>*> pipes) { this.pipes = pipes; }
+void Node<T>::setPipes(const std::vector<Pipe<T>*> pipes) { this->pipes = pipes; }
