@@ -24,6 +24,6 @@ class Graph {
       // to implement
       std::vector<T> dfs() const;
       std::vector<T> dfs(const T & source) const;
-      void dfsVisit(Pipe<T> *v, std::vector<T> & res) const;
+      void dfsVisit(Node<T> *v, std::vector<T> & res) const;
       std::vector<T> bfs(const T &source) const;
 };
