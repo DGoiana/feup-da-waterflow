@@ -46,7 +46,8 @@ class Menu::Menu() {
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore any remaining input from previous input
         std::getline(std::cin, reservoir);
 
-        it1 = std::find_if(data.Stations_Network.begin(), data.Stations_Network.end(),[&reservoir](Vertex *vertex) {
+        //TODO: Change where it gets its data from
+        itRes = std::find_if(data.Stations_Network.begin(), data.Stations_Network.end(),[&reservoir](Vertex *vertex) {
                                return reservoir == vertex->getName();
                            });
         }
@@ -58,11 +59,13 @@ class Menu::Menu() {
         std::cout << "Enter delivery site: \n";
         std::getline(std::cin, deliverySite);
 
-        /*itDeliv = std::find_if(data.Stations_Network.begin(), data.Stations_Network.end(),[&station2](Vertex *vertex) {
+        //TODO: Change where it gets its data from
+        itDeliv = std::find_if(data.Stations_Network.begin(), data.Stations_Network.end(),[&station2](Vertex *vertex) {
             return station2 == vertex->getName();
         });
-        }*/
+        }
 
+        //TODO: Change where it gets its data from
         /*call to function
         data_.graph.ResetGraphValues();
         double max = data_.graph.edmondskarp(*itRes, *itDeliv);
@@ -74,7 +77,7 @@ class Menu::Menu() {
     }
     else if (topic_in_main_menu == 2) {
         /* function that returns an array with all the cities that cant be supplied and the desired water rate value
-            vector scarcityArray = function();
+            vector scarcityArray = exercise-2-2();
          */
         std::cout << "City " << " Water Rate Needed" <<  std::endl;
 
@@ -87,10 +90,23 @@ class Menu::Menu() {
 
 
 
+
         backToMainMenu();
     }
     else if (topic_in_main_menu == 4) {
+        std::string reservoir;
+        auto itRes = ; // Initialize iterator to end
 
+        while (itRes == data.Stations_Network.end()) {
+        std::cout << "Enter reservoir: \n";
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore any remaining input from previous input
+        std::getline(std::cin, reservoir);
+
+        //TODO: Change where it gets its data from
+        itRes = std::find_if(data.Stations_Network.begin(), data.Stations_Network.end(),[&reservoir](Vertex *vertex) {
+            return reservoir == vertex->getName();
+        });
+        }
 
         backToMainMenu();
         }
