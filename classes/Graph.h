@@ -25,6 +25,7 @@ public:
 
     bool addPipe(const T &source,const T &dest, double capacity);
     bool removePipe(const T &source, const T &dest);
+    bool addBidirectionalPipe(const T &source, const T &dest, double capacity);
 
     std::vector<T> dfs() const;
     std::vector<T> dfs(const T & source) const;
@@ -38,13 +39,16 @@ class Node{
 private:
     T type;
     std::vector<Pipe<T> *> pipes;
-    bool visited;
-    bool processing;
-    int inDegree;
-    int num;
-    int low;
+    bool visited{};
+    bool processing{};
+    int inDegree{};
+    int num{};
+    int low{};
+    Pipe<T> *path = nullptr;
 
-    void addPipe(Node<T> *dest, double capacity);
+    std::vector<Pipe<T> *> incoming;
+
+    Pipe<T> * addPipe(Node<T> *dest, double capacity);
     bool removePipe(Node<T> *dest);
 
 public:
@@ -72,6 +76,7 @@ public:
     void setPipes(std::vector<Pipe<T>*> pipes);
     friend class Graph<T>;
 
+    bool deletePipe(Pipe<T> *pipe);
 };
 
 template <class T>
@@ -79,13 +84,49 @@ class Pipe {
 private:
     Node<T>* dest;      // destination vertex
     double capacity;         // pipe capacity
+    Node<T> *orig;      // origin vertex
+    Pipe<T> *reverse = nullptr; // reverse Pipe
+    double flow;        // flow
 public:
-    Pipe(Node<T> *d, double w);
-    Node<T>* getDest() const;
-    void setDest(Node<T> *dest);
+    Pipe(Node<T> *orig,Node<T> *dest, double c);
+
+    Node<T> *getDest() const;
+    Node<T> *getOrig() const;
+    Pipe<T> *getReverse() const;
+    double getFlow() const;
     double getCapacity() const;
+
+    void setReverse(Pipe<T> *reverse);
+    void setDest(Node<T> *dest);
     void setCapacity(double capacity);
+    void setFlow(double flow);
 };
+
+
+template<class T>
+void Pipe<T>::setFlow(double flow) {
+    this->flow = flow;
+}
+
+template<class T>
+void Pipe<T>::setReverse(Pipe<T> *reverse) {
+    this->reverse = reverse;
+}
+
+template<class T>
+double Pipe<T>::getFlow() const {
+    return this->flow;
+}
+
+template<class T>
+Pipe<T> *Pipe<T>::getReverse() const {
+    return this->reverse;
+}
+
+template<class T>
+Node<T> *Pipe<T>::getOrig() const {
+    return this->orig;
+}
 
 template <class T>
 Node<T>::Node(T type) {
@@ -145,6 +186,20 @@ bool Graph<T>::removeNode(const T &type) {
     return false;
 }
 
+template<class T>
+bool Graph<T>::addBidirectionalPipe(const T &source, const T &dest, double capacity) {
+    auto v1 = findNode(source);
+    auto v2 = findNode(dest);
+
+    if(v1 == nullptr || v2 == nullptr) { return false; }
+
+    Pipe<T> *e1 = v1->addPipe(v2,capacity);
+    Pipe<T> *e2 = v2->addPipe(v1,capacity);
+
+    e1->setReverse(e2);
+    e2->setReverse(e1);
+    return true;
+}
 
 template<class T>
 bool Graph<T>::addPipe(const T &source, const T &dest, double capacity) {
@@ -279,8 +334,11 @@ template <class T>
 void Node<T>::setPipes(const std::vector<Pipe<T>*> pipes) { this->pipes = pipes; }
 
 template <class T>
-void Node<T>::addPipe(Node<T> *dest, double capacity) {
-    pipes.push_back(new Pipe<T>(dest,capacity));
+Pipe<T> * Node<T>::addPipe(Node<T> *dest, double capacity) {
+    auto newPipe = new Pipe<T>(this,dest,capacity);
+    this->pipes.push_back(newPipe);
+    dest->incoming.push_back(newPipe);
+    return newPipe;
 }
 
 template <class T>
@@ -295,8 +353,24 @@ bool Node<T>::removePipe(Node<T> *dest) {
 }
 
 template <class T>
-Pipe<T>::Pipe(Node<T> *d, double c){
-    this->dest = d;
+bool Node<T>::deletePipe(Pipe<T> *pipe) {
+    Node<T> *dest = pipe->getDest();
+    auto it = dest->incoming.begin();
+    while(it != dest->incoming.end()) {
+        if((*it)->getOrig()->getType() == this->type) {
+            it = dest->incoming.erase(it);
+        }
+        else {
+            it++;
+        }
+    }
+    delete pipe;
+}
+
+template<class T>
+Pipe<T>::Pipe(Node<T> *orig, Node<T> *dest, double c) {
+    this->orig = orig;
+    this->dest = dest;
     this->capacity = c;
 }
 
