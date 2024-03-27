@@ -16,7 +16,7 @@ std::vector<std::string> Parser::split(std::string line, const std::string &deli
    return result;
 }
 
-std::list<std::vector<std::string>> Parser::readFile(const std::string &path) {
+std::list<std::vector<std::string> > Parser::readFile(const std::string &path) {
    std::ifstream file(path);
    std::string line;
    std::list<std::vector<std::string>> result;
