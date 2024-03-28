@@ -1,387 +1,109 @@
+#ifndef GRAPH_H_
+#define GRAPH_H_
+
 #include <unordered_map>
-#include <vector>
 #include <string>
 #include <algorithm>
 #include <queue>
+#include <vector>
+#include "NetworkPoint.h"
 
-template <class T> class Graph;
-template <class T> class Node;
-template <class T> class Pipe;
+class Graph;
+class Node;
+class Pipe;
 
-template <class T>
 class Graph {
-   private:
-    std::unordered_map<std::string, Node<T>*> nodes;
-    void dfsVisit(Node<T> *v, std::vector<T> & res) const;
-public:
-    // DON'T KNOW IF THIS IS REALLY NECESSARY
-    //Graph(std::unordered_map<std::string, Node<T>*> nodes);
-    Node<T>* findNode(const T &in) const;
-    int getNumNode() const;
-    std::vector<Node<T> *> getNodeSet() const;
+    private:
+        std::unordered_map<std::string, Node*> nodes;
+        void dfsVisit(Node *v, std::vector<NetworkPoint> &res) const;
+    public:
+        // DON'T KNOW IF THIS IS REALLY NECESSARY
+        // Graph(std::unordered_map<std::string, Node*> nodes);
 
-    bool addNode(const std::string &s,const T &type);
-    bool removeNode(const T &type);
+        Node* findNode(const std::string &code) const;
 
-    bool addPipe(const T &source,const T &dest, double capacity);
-    bool removePipe(const T &source, const T &dest);
-    bool addBidirectionalPipe(const T &source, const T &dest, double capacity);
+        int getNumNode() const { return nodes.size(); };
+        std::vector<Node*> getNodeSet() const;
 
-    std::vector<T> dfs() const;
-    std::vector<T> dfs(const T & source) const;
-    std::vector<T> bfs(const T &source) const;
+        bool addNode(const std::string &s,const NetworkPoint &type);
+        bool removeNode(const NetworkPoint &type);
+
+        bool addPipe(const std::string &source, const std::string &dest, double capacity);
+        bool removePipe(const std::string &source, const std::string &dest);
+        bool addBidirectionalPipe(const std::string &source, const std::string &dest, double capacity); // maybe a bool in the addPipe parameters?
+
+        std::vector<NetworkPoint> dfs() const;
+        std::vector<NetworkPoint> dfs(const std::string &source) const;
+        std::vector<NetworkPoint> bfs(const std::string &source) const;
 };
 
-
-template <class T>
 class Node{
+    private:
+        NetworkPoint info;
+        std::vector<Pipe*> pipes;
+        bool visited;
+        bool processing;
+        int inDegree;
+        int num;
+        int low;
+        Pipe *path = nullptr; // why path and not node?
 
-private:
-    T type;
-    std::vector<Pipe<T> *> pipes;
-    bool visited{};
-    bool processing{};
-    int inDegree{};
-    int num{};
-    int low{};
-    Pipe<T> *path = nullptr;
+        std::vector<Pipe*> incoming; // don't we already have the pipes vector?
 
-    std::vector<Pipe<T> *> incoming;
+        Pipe* addPipe(Node *dest, double capacity); // double with the graph one?
+        bool removePipe(Node *dest);
+    public:
+        Node(NetworkPoint _info) : info(_info) {};
 
-    Pipe<T> * addPipe(Node<T> *dest, double capacity);
-    bool removePipe(Node<T> *dest);
+        NetworkPoint getInfo() const { return this->info; };
+        void setInfo(NetworkPoint info) { this->info = info; }; 
 
-public:
-    Node(T type);
+        bool isVisited() const { return this->visited; };
+        void setVisited(bool v) { this->visited = v; };
 
-    T getType() const;
-    void setType(T type) const;
+        bool isProcessing() const { return this->processing; };
+        void setProcessing(bool p) { this->processing = p; };
 
-    bool isVisited() const;
-    void setVisited(bool v);
+        int getInDegree() const { return this->inDegree; };
+        void setInDegree(int inDegree) { this->inDegree = inDegree; };
 
-    bool isProcessing() const;
-    void setProcessing(bool p);
+        void setLow(int low) { this->low = low; };
+        int getLow() const { return this->low; };
+        
+        int getNum() const { return this->num; };
+        void setNum(int num) { this->num = num; };
 
-    int getInDegree() const;
-    void setInDegree(int inDegree);
+        std::vector<Pipe*> getPipes() const { return this->pipes; };
+        void setPipes(std::vector<Pipe*> pipes) { this->pipes = pipes; };
 
-    void setLow(int low);
-    void setNum(int num);
+        bool deletePipe(Pipe *pipe); // already defined up there?
 
-    int getNum() const;
-    int getLow() const;
-
-    std::vector<Pipe<T> *> getPipes() const;
-    void setPipes(std::vector<Pipe<T>*> pipes);
-    friend class Graph<T>;
-
-    bool deletePipe(Pipe<T> *pipe);
+        friend class Graph;
 };
 
-template <class T>
 class Pipe {
-private:
-    Node<T>* dest;      // destination vertex
-    double capacity;         // pipe capacity
-    Node<T> *orig;      // origin vertex
-    Pipe<T> *reverse = nullptr; // reverse Pipe
-    double flow;        // flow
-public:
-    Pipe(Node<T> *orig,Node<T> *dest, double c);
+    private:
+        Node *dest;
+        double capacity;   
+        Node *orig;    
+        Pipe *reverse = nullptr; 
+        double flow;
+    public:
+        Pipe(Node *_orig, Node *_dest, double _c) : orig(_orig), dest(_dest), capacity(_c) {};
 
-    Node<T> *getDest() const;
-    Node<T> *getOrig() const;
-    Pipe<T> *getReverse() const;
-    double getFlow() const;
-    double getCapacity() const;
+        Node* getDest() const { return this->dest; };
+        void setDest(Node *dest) { this->dest = dest; };
+        
+        Node* getOrig() const { return this->orig; };
 
-    void setReverse(Pipe<T> *reverse);
-    void setDest(Node<T> *dest);
-    void setCapacity(double capacity);
-    void setFlow(double flow);
+        Pipe* getReverse() const { return this->reverse; };
+        void setReverse(Pipe *reverse) { this->reverse = reverse; };
+
+        double getFlow() const { return this->flow; };
+        void setFlow(double flow) { this->flow = flow; };
+
+        void setCapacity(double capacity) { this->capacity = capacity; };
+        double getCapacity() const { return this->capacity; };
 };
 
-
-template<class T>
-void Pipe<T>::setFlow(double flow) {
-    this->flow = flow;
-}
-
-template<class T>
-void Pipe<T>::setReverse(Pipe<T> *reverse) {
-    this->reverse = reverse;
-}
-
-template<class T>
-double Pipe<T>::getFlow() const {
-    return this->flow;
-}
-
-template<class T>
-Pipe<T> *Pipe<T>::getReverse() const {
-    return this->reverse;
-}
-
-template<class T>
-Node<T> *Pipe<T>::getOrig() const {
-    return this->orig;
-}
-
-template <class T>
-Node<T>::Node(T type) {
-    this->type = type;
-}
-
-/*
-template <class T>
-Graph<T>::Graph(std::unordered_map<std::string, Node<T>*> nodes){
-   this->nodes = nodes;
-}
- */
-
-template <class T>
-std::vector<Node<T> *> Graph<T>::getNodeSet() const {
-    std::vector<Node<T> *> nodesKeys;
-    nodesKeys.reserve(nodes.size());
-    for(auto kv: nodes) {
-        nodesKeys.push_back(kv.second);
-    }
-    return nodesKeys;
-}
-
-template <class T>
-Node<T>* Graph<T>::findNode(const T &in) const {
-    for(auto it = nodes.begin(); it!= nodes.end(); it++) {
-        if(it->second->getType() == in) {
-            return it->second;
-        }
-    }
-    return nullptr;
-}
-
-template <class T>
-int Graph<T>::getNumNode() const {return nodes.size();}
-
-template <class T>
-bool Graph<T>::addNode(const std::string &s,const T &type) {
-    if(findNode(type) != NULL)
-        return false;
-    nodes.insert({s,new Node<T>(type)});
-    return true;
-}
-
-template <class T>
-bool Graph<T>::removeNode(const T &type) {
-    for(auto it = nodes.begin(); it != nodes.end(); it++) {
-        if((*it).second->getType() == type) {
-            auto n = *it;
-            nodes.erase(it);
-            for(auto u : nodes) {
-                u.second->removePipe(n.second);
-            }
-            return true;
-        }
-    }
-    return false;
-}
-
-template<class T>
-bool Graph<T>::addBidirectionalPipe(const T &source, const T &dest, double capacity) {
-    auto v1 = findNode(source);
-    auto v2 = findNode(dest);
-
-    if(v1 == nullptr || v2 == nullptr) { return false; }
-
-    Pipe<T> *e1 = v1->addPipe(v2,capacity);
-    Pipe<T> *e2 = v2->addPipe(v1,capacity);
-
-    e1->setReverse(e2);
-    e2->setReverse(e1);
-    return true;
-}
-
-template<class T>
-bool Graph<T>::addPipe(const T &source, const T &dest, double capacity) {
-    auto v1 = findNode(source);
-    auto v2 = findNode(dest);
-    if(v1 == nullptr || v2 == nullptr)
-        return false;
-    v1->addPipe(v2,capacity);
-    return true;
-}
-
-template<class T>
-bool Graph<T>::removePipe(const T &source, const T &dest) {
-    auto v1 = findNode(source);
-    auto v2 = findNode(dest);
-    if(v1 == nullptr || v2 == nullptr) {
-        return false;
-    }
-    return v1->removePipe(v2);
-}
-
-template <class T>
-std::vector<T> Graph<T>::dfs() const {
-    std::vector<T> res;
-    for(Node<T> *node : getNodeSet()) {
-        node->setVisited(false);
-    }
-    for(Node<T> *node: getNodeSet()) {
-        if(!node->isVisited()) {
-            dfsVisit(node,res);
-        }
-    }
-    return res;
-};
-
-template <class T>
-std::vector<T> Graph<T>::dfs(const T & source) const {
-    std::vector<T> res;
-    for(Node<T> *node : getNodeSet()) {
-        node->setVisited(false);
-    }
-    Node<T> *targetNode = findNode(source);
-    if(targetNode == nullptr) return std::vector<T>();
-    dfsVisit(targetNode,res);
-    return res;
-}
-
-template <class T>
-void Graph<T>::dfsVisit(Node<T> *v, std::vector<T> & res) const {
-    v->setVisited(true);
-    res.push_back(v->getType());
-    for(Pipe<T> *pipe : v->getPipes()) {
-        Node<T> *destNode = pipe->getDest();
-        if(!destNode->isVisited()) {
-            dfsVisit(destNode,res);
-        }
-    }
-    return;
-}
-
-template <class T>
-std::vector<T> Graph<T>::bfs(const T &source) const {
-    std::vector<T> res;
-    Node<T> *targetNode = findNode(source);
-    std::queue<Node<T> *> nodesQueue;
-    if(targetNode == nullptr) return res;
-
-    for(Node<T> * node : getNodeSet()) {
-        node->setVisited(false);
-    }
-
-    targetNode->setVisited(true);
-    nodesQueue.push(targetNode);
-
-    while (!nodesQueue.empty()) {
-        auto currentNode = nodesQueue.front();
-        nodesQueue.pop();
-
-        res.push_back(currentNode->getType());
-        for(Pipe<T> *pipe : currentNode->getPipes()) {
-            Node<T> *adjNode = pipe->getDest();
-            if(!adjNode->isVisited()) {
-                nodesQueue.push(adjNode);
-                adjNode->setVisited(true);
-            }
-        }
-    }
-
-    return res;
-}
-
-template <class T>
-T Node<T>::getType() const { return type; }
-
-template <class T>
-void Node<T>::setType(T type) const { this->type = type; }
-
-template <class T>
-bool Node<T>::isVisited() const { return visited; };
-
-template <class T>
-void Node<T>::setVisited(bool v) { this->visited = v;};
-
-template <class T>
-bool Node<T>::isProcessing() const { return this->processing; }
-
-template <class T>
-void Node<T>::setProcessing(bool p) { this->processing = p; };
-
-template <class T>
-int Node<T>::getInDegree() const { return this->inDegree; }
-
-template <class T>
-void Node<T>::setInDegree(int inDegree) { this->inDegree = inDegree; }
-
-template <class T>
-void Node<T>::setLow(int low) { this->low = low; };
-
-template <class T>
-void Node<T>::setNum(int num) { this->num = num; };
-
-template <class T>
-int Node<T>::getNum() const { return this->num; }
-
-template <class T>
-int Node<T>::getLow() const { return this->low; }
-
-template <class T>
-std::vector<Pipe<T>*> Node<T>::getPipes() const { return this->pipes; }
-
-template <class T>
-void Node<T>::setPipes(const std::vector<Pipe<T>*> pipes) { this->pipes = pipes; }
-
-template <class T>
-Pipe<T> * Node<T>::addPipe(Node<T> *dest, double capacity) {
-    auto newPipe = new Pipe<T>(this,dest,capacity);
-    this->pipes.push_back(newPipe);
-    dest->incoming.push_back(newPipe);
-    return newPipe;
-}
-
-template <class T>
-bool Node<T>::removePipe(Node<T> *dest) {
-    for(auto it = pipes.begin(); it != pipes.end(); it++) {
-        if((*it)->getDest() == dest) {
-            pipes.erase(it);
-            return true;
-        }
-    }
-    return false;
-}
-
-template <class T>
-bool Node<T>::deletePipe(Pipe<T> *pipe) {
-    Node<T> *dest = pipe->getDest();
-    auto it = dest->incoming.begin();
-    while(it != dest->incoming.end()) {
-        if((*it)->getOrig()->getType() == this->type) {
-            it = dest->incoming.erase(it);
-        }
-        else {
-            it++;
-        }
-    }
-    delete pipe;
-}
-
-template<class T>
-Pipe<T>::Pipe(Node<T> *orig, Node<T> *dest, double c) {
-    this->orig = orig;
-    this->dest = dest;
-    this->capacity = c;
-}
-
-template <class T>
-Node<T>* Pipe<T>::getDest() const { return this->dest; }
-
-template <class T>
-void Pipe<T>::setDest(Node<T> *dest) { this->dest = dest; };
-
-template <class T>
-double Pipe<T>::getCapacity() const { return this->capacity; };
-
-template <class T>
-void Pipe<T>::setCapacity(double capacity) { this->capacity = capacity; };
+#endif
