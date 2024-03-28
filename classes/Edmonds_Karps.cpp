@@ -15,8 +15,8 @@ float edmondsKarp(Graph *g, std::string source, std::string dest) {
 
     while(findPath(g,s,t)) {
         minFlow = getMinFlow(s,t);
-        maxFlow += minFlow;
         augmentGraph(s,t,minFlow);
+        maxFlow += minFlow;
     }
 
     return maxFlow;

@@ -33,7 +33,7 @@ class Graph {
         int getNumNode() const { return nodes.size(); };
         std::vector<Node*> getNodeSet() const;
 
-        bool addNode(const std::string &s,NetworkPoint type);
+        bool addNode(const std::string &s,NetworkPoint *type);
         bool removeNode(const NetworkPoint &type);
 
         bool addPipe(const std::string &source, const std::string &dest, double capacity);
@@ -47,7 +47,7 @@ class Graph {
 
 class Node{
     private:
-        NetworkPoint info;
+        NetworkPoint* info;
         std::vector<Pipe*> pipes;
         bool visited;
         bool processing;
@@ -61,10 +61,10 @@ class Node{
         Pipe* addPipe(Node *dest, double capacity); // double with the graph one?
         bool removePipe(Node *dest);
     public:
-        Node(NetworkPoint _info) : info(_info) {};
+        Node(NetworkPoint *_info) : info(_info) {};
 
-        NetworkPoint getInfo() const { return this->info; };
-        void setInfo(NetworkPoint info) { this->info = info; };
+        NetworkPoint* getInfo() const { return this->info; };
+        void setInfo(NetworkPoint *info) { this->info = info; };
 
         bool isVisited() const { return this->visited; };
         void setVisited(bool v) { this->visited = v; };

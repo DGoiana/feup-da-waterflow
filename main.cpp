@@ -1,5 +1,6 @@
 #include "classes/Parser.h"
 #include "classes/Dataset.h"
+#include "classes/Reservoir.h"
 #include "classes/Edmonds_Karps.h"
 #include <iostream>
 
@@ -13,6 +14,13 @@ int main() {
 
     Dataset smallDataset = createSmallDataset();
     smallDataset.prepareSuperNodes();
+
+    for(Node *node : largeDataset.getNetwork().getNodeSet()) {
+        Reservoir *reservoir = dynamic_cast<Reservoir *>(node->getInfo());
+        if(reservoir != nullptr) {
+            std::cout << reservoir->getCode() << " " << reservoir->getMaxDelivery() << '\n';
+        }
+    }
 
     maxFlow(largeDataset);
     //std::cout << '\n';
@@ -55,12 +63,12 @@ void maxFlow(Dataset dataset) {
     // FOR SHOWING PURPOSES
     std::cout << "SUPER_SOURCE\n";
     for(Pipe *p: superSource->getPipes()) {
-        std::cout << p->getDest()->getInfo().getCode() <<"(" << p->getDest()->getInfo().getCode() <<")" <<  ":" << p->getFlow() << "(FLOW)\n";
+        std::cout << p->getDest()->getInfo()->getCode() <<"(" << p->getDest()->getInfo()->getCode() <<")" <<  ":" << p->getFlow() << "(FLOW)\n";
     }
     std::cout << '\n';
     std::cout << "SUPER_SINK\n";
     for(Pipe *p: superSink->getIncoming()) {
-        std::cout << p->getOrig()->getInfo().getCode() << ":" << p->getFlow() << "(FLOW)\n";
+        std::cout << p->getOrig()->getInfo()->getCode() << ":" << p->getFlow() << "(FLOW)\n";
         maxFluxo += p->getFlow();
     }
     std::cout << "MAX_FLOW: " << maxFlow <<'\n';
