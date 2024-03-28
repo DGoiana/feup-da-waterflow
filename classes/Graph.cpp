@@ -18,7 +18,7 @@ std::vector<Node*> Graph::getNodeSet() const {
    return nodesKeys;
 }
 
-bool Graph::addNode(const std::string &s, const NetworkPoint &info) {
+bool Graph::addNode(const std::string &s, NetworkPoint info) {
    if(findNode(s) != NULL)
       return false;
    nodes.insert({s, new Node(info)});
@@ -27,7 +27,7 @@ bool Graph::addNode(const std::string &s, const NetworkPoint &info) {
 
 bool Graph::removeNode(const NetworkPoint &info) {
    for(auto it = nodes.begin(); it != nodes.end(); it++) {
-      if(it->second->getInfo() == info) {
+      if((it->second->getInfo()) == info) {
          auto n = *it;
          nodes.erase(it);
          for(auto u : nodes) {
@@ -97,7 +97,7 @@ std::vector<NetworkPoint> Graph::dfs(const std::string &source) const {
 
 void Graph::dfsVisit(Node *v, std::vector<NetworkPoint> &res) const {
    v->setVisited(true);
-   res.push_back(v->getInfo());
+   res.push_back((v->getInfo()));
    for(Pipe *pipe : v->getPipes()) {
       Node *destNode = pipe->getDest();
       if(!destNode->isVisited()) {
@@ -124,7 +124,7 @@ std::vector<NetworkPoint> Graph::bfs(const std::string &source) const {
       auto currentNode = nodesQueue.front();
       nodesQueue.pop();
 
-      res.push_back(currentNode->getInfo());
+      res.push_back((currentNode->getInfo()));
       for(Pipe *pipe : currentNode->getPipes()) {
             Node *adjNode = pipe->getDest();
             if(!adjNode->isVisited()) {
@@ -166,4 +166,5 @@ bool Node::deletePipe(Pipe *pipe) {
       }
    }
    delete pipe;
+   return true;
 }

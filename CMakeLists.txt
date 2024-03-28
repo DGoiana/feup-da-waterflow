@@ -16,4 +16,5 @@ add_executable(feup_da_proj1
         classes/Dataset.cpp
         classes/Dataset.h
         classes/NetworkPoint.h
-        main.cpp)
+        main.cpp
+        classes/Edmonds_Karps.cpp)

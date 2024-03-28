@@ -6,7 +6,15 @@
 #include <algorithm>
 #include <queue>
 #include <vector>
+#include <limits>
 #include "NetworkPoint.h"
+
+#define INF std::numeric_limits<double>::max()
+
+template<typename Base, typename T>
+inline bool instanceof(const T *ptr) {
+    return dynamic_cast<const Base*>(ptr) != nullptr;
+}
 
 class Graph;
 class Node;
@@ -25,7 +33,7 @@ class Graph {
         int getNumNode() const { return nodes.size(); };
         std::vector<Node*> getNodeSet() const;
 
-        bool addNode(const std::string &s,const NetworkPoint &type);
+        bool addNode(const std::string &s,NetworkPoint type);
         bool removeNode(const NetworkPoint &type);
 
         bool addPipe(const std::string &source, const std::string &dest, double capacity);
@@ -56,7 +64,7 @@ class Node{
         Node(NetworkPoint _info) : info(_info) {};
 
         NetworkPoint getInfo() const { return this->info; };
-        void setInfo(NetworkPoint info) { this->info = info; }; 
+        void setInfo(NetworkPoint info) { this->info = info; };
 
         bool isVisited() const { return this->visited; };
         void setVisited(bool v) { this->visited = v; };
@@ -72,6 +80,11 @@ class Node{
         
         int getNum() const { return this->num; };
         void setNum(int num) { this->num = num; };
+
+        Pipe *getPath() const {return this->path;};
+        void setPath(Pipe *path) {this->path = path;};
+
+        std::vector<Pipe*> getIncoming() const {return this->incoming;};
 
         std::vector<Pipe*> getPipes() const { return this->pipes; };
         void setPipes(std::vector<Pipe*> pipes) { this->pipes = pipes; };
