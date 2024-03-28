@@ -6,7 +6,7 @@
 
 class Dataset {
    private:
-    Graph *network;
+    Graph network;
    public:
     Dataset();
     Dataset(std::list<std::vector<std::string> > cities, std::list<std::vector<std::string> > pipes, std::list<std::vector<std::string> > stations, std::list<std::vector<std::string> > reservoirs);
@@ -17,7 +17,7 @@ class Dataset {
     void loadPipes(std::list<std::vector<std::string> > pipes);
 
     void prepareSuperNodes();
-    Graph *getNetwork() const;
+    Graph getNetwork() const;
 };
 
 #endif
