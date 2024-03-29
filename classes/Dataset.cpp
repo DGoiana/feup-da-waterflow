@@ -42,7 +42,7 @@ void Dataset::loadReservoirs(std::list<std::vector<std::string>> reservoirs){
 
 void Dataset::loadPipes(std::list<std::vector<std::string>> pipes){
    for(std::vector<std::string> _pipe : pipes){
-      if(_pipe[3] == "1"){
+      if(_pipe[3] == "0"){
          network.addBidirectionalPipe(_pipe[0],_pipe[1], stoi(_pipe[2]));
       }
       else{
