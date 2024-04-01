@@ -11,8 +11,8 @@ class NetworkPoint{
       NetworkPoint() {};
       NetworkPoint(std::string _code, int _id) : code(_code), id(_id) {};
 
-      std::string getCode() const { return this->code; }
-      int getID() const { return this->id; }
+      virtual std::string getCode() const { return this->code; }
+      virtual int getID() const { return this->id; }
 
       bool operator==(const NetworkPoint &other) const {
         return this->code == other.code;
