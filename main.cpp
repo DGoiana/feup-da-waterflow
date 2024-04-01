@@ -12,15 +12,19 @@ int main() {
     Dataset largeDataset = createLargeDataset();
     largeDataset.prepareSuperNodes();
 
-    Dataset smallDataset = createSmallDataset();
+     Dataset smallDataset = createSmallDataset();
     smallDataset.prepareSuperNodes();
 
-    for(Node *node : largeDataset.getNetwork().getNodeSet()) {
-        Reservoir *reservoir = dynamic_cast<Reservoir *>(node->getInfo());
-        if(reservoir != nullptr) {
-            std::cout << reservoir->getCode() << " " << reservoir->getMaxDelivery() << '\n';
+    int i = 0;
+
+    /* for(Node *node : largeDataset.getNetwork().getNodeSet()) {
+        for(Pipe *pipe : node->getPipes()){
+            std::cout << node->getInfo()->getCode() << " : " << pipe->getOrig()->getInfo()->getCode() << " to " << pipe->getDest()->getInfo()->getCode() << '\n';
+            if(node->getInfo()->getCode() != "SUPER_SOURCE" && pipe->getDest()->getInfo()->getCode() != "SUPER_SINK") i++;
         }
     }
+
+    std::cout << i << '\n'; */
 
     maxFlow(largeDataset);
     //std::cout << '\n';
@@ -45,7 +49,6 @@ Dataset createLargeDataset() {
     std::list<std::vector<std::string> > cities = parser.parseCities("../large_dataset/Cities.csv");
     std::list<std::vector<std::string> > reservoirs = parser.readFile("../large_dataset/Reservoir.csv");
     std::list<std::vector<std::string> > stations = parser.readFile("../large_dataset/Stations.csv");
-    stations.pop_back();
     std::list<std::vector<std::string> > pipes = parser.readFile("../large_dataset/Pipes.csv");
 
     return Dataset(cities, pipes, stations, reservoirs);
@@ -61,6 +64,8 @@ void maxFlow(Dataset dataset) {
     int maxFluxo = 0;
 
     // FOR SHOWING PURPOSES
+
+
     std::cout << "SUPER_SOURCE\n";
     for(Pipe *p: superSource->getPipes()) {
         std::cout << p->getDest()->getInfo()->getCode() <<"(" << p->getDest()->getInfo()->getCode() <<")" <<  ":" << p->getFlow() << "(FLOW)\n";
