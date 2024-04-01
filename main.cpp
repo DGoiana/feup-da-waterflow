@@ -1,12 +1,13 @@
 #include "classes/Parser.h"
 #include "classes/Dataset.h"
-#include "classes/Reservoir.h"
 #include "classes/Edmonds_Karps.h"
-#include <iostream>
+#include "classes/Utils.cpp"
+
+#include "City.h"
 
 Dataset createSmallDataset();
 Dataset createLargeDataset();
-void maxFlow(Dataset dataset);
+double maxFlow(Dataset dataset);
 
 int main() {
     Dataset largeDataset = createLargeDataset();
@@ -14,21 +15,12 @@ int main() {
 
      Dataset smallDataset = createSmallDataset();
     smallDataset.prepareSuperNodes();
+    double largeMaxFlow = maxFlow(largeDataset);
+    double smallMaxFlow = maxFlow(smallDataset);
+    auto deficits = createDeficits(largeDataset);
 
-    int i = 0;
-
-    /* for(Node *node : largeDataset.getNetwork().getNodeSet()) {
-        for(Pipe *pipe : node->getPipes()){
-            std::cout << node->getInfo()->getCode() << " : " << pipe->getOrig()->getInfo()->getCode() << " to " << pipe->getDest()->getInfo()->getCode() << '\n';
-            if(node->getInfo()->getCode() != "SUPER_SOURCE" && pipe->getDest()->getInfo()->getCode() != "SUPER_SINK") i++;
-        }
-    }
-
-    std::cout << i << '\n'; */
-
-    maxFlow(largeDataset);
-    //std::cout << '\n';
-    //maxFlow(smallDataset);
+    showStatisticsDeficit(deficits,smallMaxFlow);
+    return 0;
 }
 
 Dataset createSmallDataset() {
@@ -54,15 +46,16 @@ Dataset createLargeDataset() {
     return Dataset(cities, pipes, stations, reservoirs);
 }
 
-void maxFlow(Dataset dataset) {
+double maxFlow(Dataset dataset) {
     Node *superSource = dataset.getNetwork().findNode("SUPER_SOURCE");
     Node *superSink = dataset.getNetwork().findNode("SUPER_SINK");
 
     Graph newGraph = dataset.getNetwork();
 
     int maxFlow = edmondsKarp(&(newGraph),"SUPER_SOURCE","SUPER_SINK");
-    int maxFluxo = 0;
 
+    return maxFlow;
+    /*
     // FOR SHOWING PURPOSES
 
 
@@ -78,4 +71,6 @@ void maxFlow(Dataset dataset) {
     }
     std::cout << "MAX_FLOW: " << maxFlow <<'\n';
     std::cout << "MAX_FLOW: " << maxFluxo <<'\n';
+     */
 }
+
