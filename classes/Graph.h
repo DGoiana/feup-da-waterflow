@@ -58,7 +58,6 @@ class Node{
 
         std::vector<Pipe*> incoming; // don't we already have the pipes vector?
 
-        Pipe* addPipe(Node *dest, double capacity); // double with the graph one?
         bool removePipe(Node *dest);
     public:
         Node(NetworkPoint *_info) : info(_info) {};
@@ -90,6 +89,7 @@ class Node{
         void setPipes(std::vector<Pipe*> pipes) { this->pipes = pipes; };
 
         bool deletePipe(Pipe *pipe); // already defined up there?
+        Pipe* addPipe(Node *dest, double capacity); // double with the graph one?
 
         friend class Graph;
 };

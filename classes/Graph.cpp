@@ -1,4 +1,5 @@
 #include "Graph.h"
+#include <iostream>
 
 Node* Graph::findNode(const std::string &code) const {
    for(auto it = this->nodes.begin(); it != nodes.end(); it++) {
