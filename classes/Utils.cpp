@@ -219,3 +219,72 @@ void removePipe(Dataset *dataset, std::string source, std::string dest){
     if(_pipe1 != nullptr) _graph.addPipe(source, dest, _pipe1->getCapacity());
     if(_pipe2 != nullptr) _graph.addPipe(dest, source, _pipe2->getCapacity());
 }
+
+void balanceNetwork(Dataset *dataset){
+    Graph _graph = dataset->getNetwork();
+
+    edmondsKarp(&_graph, "SUPER_SOURCE", "SUPER_SINK");
+    auto initialDeficits = createDeficitsCities(*dataset);
+
+    for(auto n : _graph.getNodeSet()){
+        double mean = 0;
+        for(auto p: n->getPipes()){
+            mean += p->getFlow();
+        }
+        mean /= n->getPipes().size();
+
+        std::vector<Pipe*> aboveAverage;
+        std::vector<Pipe*> belowAverage;
+
+        for(auto p : n->getPipes()){
+            if(p->getFlow() > mean && p->getFlow() < p->getCapacity()) aboveAverage.push_back(p);
+            if(p->getFlow() < mean && p->getFlow() < p->getCapacity()) belowAverage.push_back(p);
+        }
+
+        double toDistribute = 0;
+
+        for(auto p: aboveAverage){
+            toDistribute += p->getFlow() - mean;
+            p->setFlow(p->getFlow() - (p->getFlow() - mean));
+        }
+
+        for(auto p : belowAverage){
+            if(toDistribute >= mean - p->getFlow()){
+                toDistribute -= std::min(p->getCapacity() - p->getFlow(), mean - p->getFlow());
+                p->setFlow(std::min(p->getCapacity(), mean));
+            }
+        }
+
+        if(toDistribute > 0) {
+            std::vector<Pipe *> usablePipes;
+
+            for (auto p: n->getPipes()) {
+                if (p->getFlow() < p->getCapacity()) usablePipes.push_back(p);
+            }
+
+            sort(usablePipes.begin(), usablePipes.end(), [](Pipe *p1, Pipe *p2) {
+                return p1->getCapacity() < p2->getCapacity();
+            });
+
+            for (auto p: usablePipes) {
+                if (p->getFlow() + toDistribute > p->getCapacity()) {
+                    toDistribute -= p->getCapacity() - p->getFlow();
+                    p->setFlow(p->getCapacity());
+                } else {
+                    p->setFlow(p->getFlow() + toDistribute);
+                }
+            }
+        }
+    }
+
+    // TODO CHECK DEFICITS
+    auto finalDeficits = createDeficitsCities(*dataset);
+
+    for(int i = 0; i < initialDeficits.size(); i++){
+        if(initialDeficits[i].second != finalDeficits[i].second){
+            std::cout << "The city " << dynamic_cast<City*>(initialDeficits[i].first->getInfo())->getName() << " (" << initialDeficits[i].first->getInfo()->getCode() <<  ") has changed it's deficit from " << initialDeficits[i].second << " to " << finalDeficits[i].second << '\n';
+        }
+    }
+    return;
+
+}

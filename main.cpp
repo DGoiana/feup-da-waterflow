@@ -9,22 +9,13 @@ int main() {
     largeDataset.prepareSuperNodes();
 
 
-     Dataset smallDataset = createSmallDataset();
+    Dataset smallDataset = createSmallDataset();
     smallDataset.prepareSuperNodes();
+
     double largeMaxFlow = maxFlow(largeDataset);
     double smallMaxFlow = maxFlow(smallDataset);
 
-    std::cout << largeMaxFlow << '\n';
-
-    removePipe(&largeDataset, "R_13", "PS_42");
-
-    std::cout << maxFlow(largeDataset) << '\n';
-
-    auto deficits = createDeficitsCities(largeDataset);
-    auto pipesDeficits = createDeficitsPipes(largeDataset);
-
-    //showStatisticsDeficit(deficits,largeMaxFlow);
-    //showStatisticsDeficit(pipesDeficits,largeMaxFlow);
+    balanceNetwork(&largeDataset);
 
     return 0;
 }
