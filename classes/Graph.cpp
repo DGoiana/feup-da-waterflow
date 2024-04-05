@@ -1,4 +1,5 @@
 #include "Graph.h"
+#include <iostream>
 
 Node* Graph::findNode(const std::string &code) const {
    for(auto it = this->nodes.begin(); it != nodes.end(); it++) {
@@ -26,15 +27,12 @@ bool Graph::addNode(const std::string &s, NetworkPoint *info) {
 }
 
 bool Graph::removeNode(const NetworkPoint &info) {
-   for(auto it = nodes.begin(); it != nodes.end(); it++) {
-      if(*(it->second->getInfo()) == info) {
-         auto n = *it;
-         nodes.erase(it);
-         for(auto u : nodes) {
-            u.second->removePipe(n.second);
-         }
-         return true;
-      }
+   auto n = findNode(info.getCode());
+   for(auto p: n->getPipes()){
+       removePipe(info.getCode(), p->getDest()->getInfo()->getCode());
+   }
+   for(auto p: n->getIncoming()){
+       removePipe(p->getOrig()->getInfo()->getCode(), info.getCode());
    }
    return false;
 }
@@ -167,4 +165,16 @@ bool Node::deletePipe(Pipe *pipe) {
    }
    delete pipe;
    return true;
+}
+
+Pipe* Graph::findPipe(const std::string source, const std::string dest) const {
+    Node* src = findNode(source);
+    Node* dst = findNode(dest);
+
+    for(auto p : src->getPipes()){
+        if(p->getDest()->getInfo()->getCode() == dest){
+            return p;
+        }
+    }
+    return nullptr;
 }
