@@ -2,35 +2,18 @@
 #include "classes/Dataset.h"
 #include "classes/Reservoir.h"
 #include "classes/Edmonds_Karps.h"
+#include "classes/Menu.h"
 #include <iostream>
 
 Dataset createSmallDataset();
 Dataset createLargeDataset();
-void maxFlow(Dataset dataset);
 
 int main() {
-    Dataset largeDataset = createLargeDataset();
-    largeDataset.prepareSuperNodes();
+    Dataset dataset = createLargeDataset();
+    dataset.prepareSuperNodes();
 
-     Dataset smallDataset = createSmallDataset();
-    smallDataset.prepareSuperNodes();
-
-    int i = 0;
-
-    /* for(Node *node : largeDataset.getNetwork().getNodeSet()) {
-        for(Pipe *pipe : node->getPipes()){
-            std::cout << node->getInfo()->getCode() << " : " << pipe->getOrig()->getInfo()->getCode() << " to " << pipe->getDest()->getInfo()->getCode() << '\n';
-            if(node->getInfo()->getCode() != "SUPER_SOURCE" && pipe->getDest()->getInfo()->getCode() != "SUPER_SINK") i++;
-        }
-    }
-
-    std::cout << i << '\n'; */
-
-    maxFlow(largeDataset);
-    //std::cout << '\n';
-    //maxFlow(smallDataset);
+    Menu menu(dataset);
 }
-
 Dataset createSmallDataset() {
     Parser parser;
 
