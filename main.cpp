@@ -11,39 +11,21 @@ int main() {
 
      Dataset smallDataset = createSmallDataset();
     smallDataset.prepareSuperNodes();
+    double largeMaxFlow = maxFlow(largeDataset);
+    double smallMaxFlow = maxFlow(smallDataset);
+    auto deficits = createDeficitsCities(smallDataset);
+    auto pipesDeficits = createDeficitsPipes(smallDataset);
 
-    double  largeMaxFlow = maxFlow(largeDataset);
-    //auto deficits = createDeficits(smallDataset);
-
-    //showStatisticsDeficit(deficits,largeMaxFlow);
-
-    removeNode(&largeDataset, "R_13");
+    showStatisticsDeficit(deficits,smallMaxFlow);
+    showStatisticsDeficit(pipesDeficits,smallMaxFlow);
 
     return 0;
 }
 
 double maxFlow(Dataset dataset) {
-    Node *superSource = dataset.getNetwork().findNode("SUPER_SOURCE");
-    Node *superSink = dataset.getNetwork().findNode("SUPER_SINK");
 
     Graph newGraph = dataset.getNetwork();
-
     int maxFlow = edmondsKarp(&(newGraph),"SUPER_SOURCE","SUPER_SINK");
     return maxFlow;
-
-    //FOR SHOWING PURPOSES
-
-
-    /* std::cout << "SUPER_SOURCE\n";
-    for(Pipe *p: superSource->getPipes()) {
-        std::cout << p->getDest()->getInfo()->getCode() <<"(" << p->getDest()->getInfo()->getCode() <<")" <<  ":" << p->getFlow() << "(FLOW)\n";
-    }
-    std::cout << '\n';
-    std::cout << "SUPER_SINK\n";
-    for(Pipe *p: superSink->getIncoming()) {
-        std::cout << p->getOrig()->getInfo()->getCode() << ":" << p->getFlow() << "(FLOW)\n";
-    }
-    std::cout << "MAX_FLOW: " << maxFlow <<'\n'; */
-
 }
 
