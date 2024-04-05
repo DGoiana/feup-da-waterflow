@@ -27,15 +27,12 @@ bool Graph::addNode(const std::string &s, NetworkPoint *info) {
 }
 
 bool Graph::removeNode(const NetworkPoint &info) {
-   for(auto it = nodes.begin(); it != nodes.end(); it++) {
-      if(*(it->second->getInfo()) == info) {
-         auto n = *it;
-         nodes.erase(it);
-         for(auto u : nodes) {
-            u.second->removePipe(n.second);
-         }
-         return true;
-      }
+   auto n = findNode(info.getCode());
+   for(auto p: n->getPipes()){
+       removePipe(info.getCode(), p->getDest()->getInfo()->getCode());
+   }
+   for(auto p: n->getIncoming()){
+       removePipe(p->getOrig()->getInfo()->getCode(), info.getCode());
    }
    return false;
 }
