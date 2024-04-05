@@ -89,7 +89,7 @@ void showStatisticsDeficit(std::vector<std::pair<Pipe *,int>> deficits, double m
 
     std::cout << "Deficit Stats" << '\n';
 
-    std::cout << "Variance: " << std::sqrt(calculate_variance(deficits)) << '\n';
+    std::cout << "Variance: " << calculate_variance(deficits) << '\n';
     // Calculate mean
     double mean = 0.0;
     for (const auto &pair: deficits) {
@@ -122,7 +122,7 @@ void showStatisticsDeficit(std::vector<std::pair<Node *,int>> deficits, double m
 
     std::cout << "Deficit Stats" << '\n';
 
-    std::cout << "Variance: " << std::sqrt(calculate_variance(deficits)) << '\n';
+    std::cout << "Variance: " << calculate_variance(deficits) << '\n';
     // Calculate mean
     double mean = 0.0;
     for (const auto &pair: deficits) {
@@ -164,27 +164,27 @@ std::vector<std::pair<Node *,int>> createDeficitsCities(Dataset dataset) {
 }
 
 void removeNode(Dataset *dataset, std::string code){
-    Node* nodeToRemove = dataset->getNetwork().findNode(code); // find node to remove
+    Graph _graph = dataset->getNetwork(); // get graph
+
+    Node* nodeToRemove = _graph.findNode(code); // find node to remove
 
     std::vector<Pipe*> oldOutgoingPipes = nodeToRemove->getPipes();
     std::vector<Pipe*> oldIncomingPipes = nodeToRemove->getIncoming();
 
-    Graph _graph = dataset->getNetwork(); // get graph
-
-    int initialFlow = edmondsKarp(&_graph, "SUPER_SOURCE", "SUPER_SINK"); // run initial flow
-    //std::vector<std::pair<std::string, int>> initialDeficits = createDeficits(dataset); // create initial deficits
+    edmondsKarp(&_graph, "SUPER_SOURCE", "SUPER_SINK"); // run initial flow
+    std::vector<std::pair<Node*, int>> initialDeficits = createDeficitsCities(*dataset); // create initial deficits
 
     _graph.removeNode(*nodeToRemove->getInfo()); // remove node
 
-    int middleFlow = edmondsKarp(&_graph, "SUPER_SOURCE", "SUPER_SINK"); // run updated flow
-    //std::vector<std::pair<std::string, int>> finalDeficits = createDeficits(dataset); // create updated deficits
+    edmondsKarp(&_graph, "SUPER_SOURCE", "SUPER_SINK"); // run updated flow
+    std::vector<std::pair<Node*, int>> finalDeficits = createDeficitsCities(*dataset); // create updated deficits
 
-    /*
+    
     for(int i = 0; i < initialDeficits.size(); i++){
         if(initialDeficits[i].second != finalDeficits[i].second){
-            std::cout << "The city " << dynamic_cast<City*>(_graph.findNode(initialDeficits[i].first)->getInfo())->getName() << " (" << _graph.findNode(initialDeficits[i].first)->getInfo()->getCode() <<  ") has changed it's deficit from " << initialDeficits[i].second << " to " << finalDeficits[i].second << '\n';
+            std::cout << "The city " << dynamic_cast<City*>(initialDeficits[i].first->getInfo())->getName() << " (" << initialDeficits[i].first->getInfo()->getCode() <<  ") has changed it's deficit from " << initialDeficits[i].second << " to " << finalDeficits[i].second << '\n';
         }
-    } */
+    } 
 
     for(auto p: oldOutgoingPipes){
         nodeToRemove->addPipe(p->getDest(), p->getCapacity());
@@ -193,4 +193,29 @@ void removeNode(Dataset *dataset, std::string code){
     for(auto p: oldIncomingPipes){
         p->getOrig()->addPipe(nodeToRemove, p->getCapacity());
     }
+}
+
+void removePipe(Dataset *dataset, std::string source, std::string dest){
+    Graph _graph = dataset->getNetwork();
+
+    edmondsKarp(&_graph, "SUPER_SOURCE", "SUPER_SINK");
+    std::vector<std::pair<Node*, int>> initialDeficits = createDeficitsCities(*dataset);
+
+    Pipe* _pipe1 = _graph.findPipe(source, dest);
+    Pipe* _pipe2 = _graph.findPipe(dest, source);
+
+    if(_pipe1 != nullptr) _graph.removePipe(source, dest);
+    if(_pipe2 != nullptr) _graph.removePipe(dest, source);
+
+    edmondsKarp(&_graph, "SUPER_SOURCE", "SUPER_SINK");
+    std::vector<std::pair<Node*, int>> finalDeficits = createDeficitsCities(*dataset);
+
+    for(int i = 0; i < initialDeficits.size(); i++){
+        if(initialDeficits[i].second != finalDeficits[i].second){
+            std::cout << "The city " << dynamic_cast<City*>(initialDeficits[i].first->getInfo())->getName() << " (" << initialDeficits[i].first->getInfo()->getCode() <<  ") has changed it's deficit from " << initialDeficits[i].second << " to " << finalDeficits[i].second << '\n';
+        }
+    }
+
+    if(_pipe1 != nullptr) _graph.addPipe(source, dest, _pipe1->getCapacity());
+    if(_pipe2 != nullptr) _graph.addPipe(dest, source, _pipe2->getCapacity());
 }

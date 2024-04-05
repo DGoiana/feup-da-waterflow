@@ -29,6 +29,7 @@ class Graph {
         // Graph(std::unordered_map<std::string, Node*> nodes);
 
         Node* findNode(const std::string &code) const;
+        Pipe* findPipe(const std::string source, const std::string dest) const;
 
         int getNumNode() const { return nodes.size(); };
         std::vector<Node*> getNodeSet() const;

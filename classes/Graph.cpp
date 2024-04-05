@@ -166,3 +166,15 @@ bool Node::deletePipe(Pipe *pipe) {
    delete pipe;
    return true;
 }
+
+Pipe* Graph::findPipe(const std::string source, const std::string dest) const {
+    Node* src = findNode(source);
+    Node* dst = findNode(dest);
+
+    for(auto p : src->getPipes()){
+        if(p->getDest()->getInfo()->getCode() == dest){
+            return p;
+        }
+    }
+    return nullptr;
+}
