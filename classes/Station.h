@@ -1,11 +1,12 @@
-#include <string>
+#ifndef STATION_H_
+#define STATION_H_
 
-class Station {
-   private:
-      std::string code;
-      int id;
+#include <string>
+#include "NetworkPoint.h"
+
+class Station : public NetworkPoint {
    public:
-      Station(std::string code, int id);
-      std::string getCode() const;
-      int getID() const;
+      Station(std::string _code, int _id) : NetworkPoint(_code, _id) {};
 };
+
+#endif

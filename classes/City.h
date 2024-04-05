@@ -1,17 +1,19 @@
-#include <string>
+#ifndef CITY_H_
+#define CITY_H_
 
-class City {
+#include <string>
+#include "NetworkPoint.h"
+
+class City : public NetworkPoint {
    private:
       std::string name;
-      std::string code;
-      int id;
       int population;
       int deliveryDemand;
    public:
-      City(std::string name, std::string code, int id, int deliveryDemand, int population);
-      std::string getName() const;
-      std::string getCode() const;
-      int getID() const;
-      int getPopulation() const;
-      int getDeliveryDemand() const;
+      City(std::string _name, std::string _code, int _id, int _deliveryDemand, int _population) : NetworkPoint(_code, _id), name(_name), population(_population), deliveryDemand(_deliveryDemand) {};
+      int getDeliveryDemand() const { return this->deliveryDemand; }
+      int getPopulation() const { return this->population; }
+      std::string getName() const { return this->name; }
 };
+
+#endif
