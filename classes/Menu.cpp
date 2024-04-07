@@ -102,7 +102,16 @@ void Menu::MainMenu() {
             backToMainMenu();
         }
         else if (topic_in_main_menu == 5) {
-            std::cout << "Not yet implemented" << '\n';
+
+            for (Node* node : graph.getNodeSet()) {
+                NetworkPoint* info = node->getInfo();
+                std::string code = info->getCode();
+                if (code[0]=='P'){
+                    std::cout << "By removing the " << code  <<  "station: " << '\n';
+                    removeNode(&dataset, code);
+                }
+            }
+
             backToMainMenu();
         }
         else if (topic_in_main_menu == 6) {

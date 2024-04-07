@@ -90,6 +90,15 @@ void showStatisticsDeficit(std::vector<std::pair<Pipe *,int>> deficits, double m
 }
 
 void showStatisticsDeficit(std::vector<std::pair<Node *,int>> deficits, double maxFlow) {
+    for(auto p : deficits) {
+        auto node = p.first;
+        int sumFlow = 0;
+        for(Pipe *pipe: node->getPipes()) {
+            sumFlow += pipe->getFlow();
+        }
+
+    }
+
     std::cout << "Deficit Stats" << '\n';
 
     std::cout << "Variance: " << calculate_variance(deficits) << '\n';
