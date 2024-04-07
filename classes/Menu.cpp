@@ -5,51 +5,9 @@
 #include "Menu.h"
 #include "Utils.h"
 
-int Menu::DatasetMenu() {
-    std::cout << "\n\n ----------------------------------------------\n"
-                     "|                 Dataset Menu                  |\n"
-                     " ----------------------------------------------\n";
-    std::cout << "Hello, water supply manager!\n";
-    std::cout << "Select the number of the topic...\n"
-                 "[1]> Small Dataset\n"
-                 "[2]> Large Dataset\n"
+bool done = false;
 
-                 "\n[0]> Quit\n";
-
-    int topic_in_graph_menu;
-    std::string striTemp;
-
-    while (true) {
-        topic_in_graph_menu = 0;
-        striTemp = "";
-        std::cin >> striTemp;
-        try {
-            topic_in_graph_menu = stoi(striTemp);
-        }
-        catch (...) {
-            topic_in_graph_menu = 100;
-        }
-
-        if (topic_in_graph_menu == 1) {
-            return 1;
-            break;
-        } else if (topic_in_graph_menu == 2) {
-            return 2;
-            break;
-        }
-
-        else if (topic_in_graph_menu == 0) break;
-        else std::cout << "Error: Choose one number of the Main Menu.\n";
-    }
-    return 0;
-}
-
-Menu::Menu() {
-
-}
-
-
-void Menu::MainMenu(Dataset dataset) {
+void Menu::MainMenu() {
 
     std::cout << "\n\n ----------------------------------------------\n"
                  "|                 Main Menu                    |\n"
@@ -72,7 +30,7 @@ void Menu::MainMenu(Dataset dataset) {
 
     double maxFlow = edmondsKarp(&graph,"SUPER_SOURCE","SUPER_SINK");
 
-    while (!exit) {
+    while (!done) {
         topic_in_main_menu = 0;
         striTemp = "";
         std::cin >> striTemp;
@@ -111,13 +69,24 @@ void Menu::MainMenu(Dataset dataset) {
             backToMainMenu();
         }
         else if (topic_in_main_menu == 3) {
-            std::cout << "Not yet implemented" << '\n';
+            auto cityDeficits = createDeficitsCities(dataset);
+            for(auto element : cityDeficits) {
+                auto code = element.first->getInfo()->getCode();
+                auto maxDemand = dynamic_cast<City*>(element.first->getInfo())->getDeliveryDemand();
+                if(element.second != 0) {
+                    std::cout << code << " has deficit of " << element.second << '.';
+                } else {
+                    std::cout << code << " has no deficit.";
+                }
+                std::cout << " (Max Demand: " << maxDemand << ")" << '\n';
+            }
+            std::cout << "\n";
+            showStatisticsDeficit(cityDeficits,0);
             backToMainMenu();
         }
         else if (topic_in_main_menu == 4) {
 
             std::string reservoir;
-            int flow = 0;
             Node *foundReservoir = nullptr;
 
             while(foundReservoir == nullptr) {
@@ -137,20 +106,42 @@ void Menu::MainMenu(Dataset dataset) {
             backToMainMenu();
         }
         else if (topic_in_main_menu == 6) {
-            std::string city;
-            int flow = 0;
-            Node *foundCity = nullptr;
+            std::string choice;
+            int a;
+            std::cout << "Choose:\n"
+                         "0 - Pipes connected to Cities\n"
+                         "1 - Remove singular pipe\n";
+            std::cin >> choice;
+            try {
+                a = stoi(choice);
+            } catch (...){backToMainMenu();}
+            if(a == 0) {
+                for(auto node: dataset.getNetwork().getNodeSet()) {
+                    for(auto pipe: node->getPipes()) {
+                        auto orig = pipe->getOrig()->getInfo()->getCode();
+                        auto dest = pipe->getDest()->getInfo()->getCode();
+                        std::cout <<"Removing " <<  orig << " -> " << dest << '\n';
+                        removePipe(&dataset,orig,dest);
+                        std::cout << '\n';
+                    }
+                }
+            } else if (a == 1){
+                std::string orig;
+                std::string dest;
+                Pipe *foundPipe = nullptr;
 
-            while(foundCity == nullptr) {
-                std::cout << "Enter city code (Ex.: C_1): " << "\n";
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore any remaining input from previous input
-                std::getline(std::cin, city);
+                while(foundPipe == nullptr) {
+                    std::cout << "Enter reservoir code (Ex.: R_1): " << "\n";
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore any remaining input from previous input
+                    std::cout << "Origin:\n";
+                    std::getline(std::cin, orig);
+                    std::cout << "Destination:\n";
+                    std::getline(std::cin,dest);
 
-                foundCity = graph.findNode(city);
-            }
+                    foundPipe = graph.findPipe(orig,dest);
+                }
 
-            for(auto pipe : foundCity->getPipes()) {
-                flow += pipe->getFlow();
+                removePipe(&dataset, foundPipe->getOrig()->getInfo()->getCode(),foundPipe->getDest()->getInfo()->getCode());
             }
             backToMainMenu();
         }
@@ -176,8 +167,8 @@ void Menu::backToMainMenu() {
         catch (...) {
             back = 10;
         }
-        if (back == 1) MainMenu(dataset);
-        else if (back == 0) { exit = true; break; }
+        if (back == 1) MainMenu();
+        else if (back == 0) { done = true; break; }
         std::cout << "> Invalid choice.\n"
                      "[1]> Back to Main Menu.\n"
                      "[0]> Quit.\n";

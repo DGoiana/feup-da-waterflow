@@ -19,8 +19,8 @@ class Menu {
     void backToMainMenu();
 
 public:
-    Menu();
-    void MainMenu(Dataset dataset);
+    Menu(Dataset dataset) : dataset(dataset) {};
+    void MainMenu();
 
     int DatasetMenu();
 

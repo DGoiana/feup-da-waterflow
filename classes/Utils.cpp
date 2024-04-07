@@ -71,12 +71,6 @@ double calculate_variance(const std::vector<std::pair<Node *, int>>& data) {
 }
 
 void showStatisticsDeficit(std::vector<std::pair<Pipe *,int>> deficits, double maxFlow) {
-    for(auto p: deficits) {
-        auto pipe = p.first;
-        std::cout << pipe->getOrig()->getInfo()->getCode() << " -> " << pipe->getDest()->getInfo()->getCode() << '\n';
-        std::cout << "   Demand: " <<  pipe->getCapacity() << '\n';
-        std::cout << "   Actual Flow: " << pipe->getFlow() << '\n';
-        std::cout << "   Deficit: " << pipe->getCapacity() - pipe->getFlow() << '\n';    }
 
     std::cout << "Deficit Stats" << '\n';
 
@@ -96,21 +90,6 @@ void showStatisticsDeficit(std::vector<std::pair<Pipe *,int>> deficits, double m
 }
 
 void showStatisticsDeficit(std::vector<std::pair<Node *,int>> deficits, double maxFlow) {
-    for(auto p : deficits) {
-        auto node = p.first;
-        int sumFlow = 0;
-        for(Pipe *pipe: node->getPipes()) {
-            sumFlow += pipe->getFlow();
-        }
-        if(node->getInfo()->getCode().substr(0,1) == "C") {
-            double cityDemand = dynamic_cast<City*>(node->getInfo())->getDeliveryDemand();
-            std::cout << node->getInfo()->getCode() << '\n';
-            std::cout << "   Demand: " <<  cityDemand << '\n';
-            std::cout << "   Actual Flow: " << sumFlow << '\n';
-            std::cout << "   Deficit: " << cityDemand - sumFlow << '\n';
-        }
-    }
-
     std::cout << "Deficit Stats" << '\n';
 
     std::cout << "Variance: " << calculate_variance(deficits) << '\n';
