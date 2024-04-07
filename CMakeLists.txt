@@ -39,4 +39,6 @@ add_executable(feup_da_proj1
         classes/NetworkPoint.h
         main.cpp
         classes/Edmonds_Karps.cpp
-        classes/Edmonds_Karps.h)
+        classes/Edmonds_Karps.h
+        classes/Utils.h
+        classes/Utils.cpp)

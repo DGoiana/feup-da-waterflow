@@ -9,6 +9,9 @@ bool done = false;
 
 void Menu::MainMenu() {
 
+    auto graph = dataset.getNetwork();
+    dataset.prepareSuperNodes();
+
     std::cout << "\n\n ----------------------------------------------\n"
                  "|                 Main Menu                    |\n"
                  " ----------------------------------------------\n";
@@ -20,15 +23,12 @@ void Menu::MainMenu() {
                  "[4]> City Water Supply Impact from Individual Reservoir Failures (3.1)\n"
                  "[5]> Effect of Temporary Pumping Station Removal on Water Delivery (3.2)\n"
                  "[6]> Critical Pipeline Failures Impacting City Water Supply (3.3)\n"
+                 "[7]> Balance Network (2.3)\n"
 
                  "\n[0]> Quit\n";
 
     int topic_in_main_menu;
     std::string striTemp;
-    dataset.prepareSuperNodes();
-    Graph graph = dataset.getNetwork();
-
-    double maxFlow = edmondsKarp(&graph,"SUPER_SOURCE","SUPER_SINK");
 
     while (!done) {
         topic_in_main_menu = 0;
@@ -51,7 +51,7 @@ void Menu::MainMenu() {
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore any remaining input from previous input
                 std::getline(std::cin, reservoir);
 
-                foundReservoir = graph.findNode(reservoir);
+                foundReservoir = dataset.getNetwork().findNode(reservoir);
             }
 
             for(auto pipe : foundReservoir->getPipes()) {
@@ -69,7 +69,7 @@ void Menu::MainMenu() {
             backToMainMenu();
         }
         else if (topic_in_main_menu == 3) {
-            auto cityDeficits = createDeficitsCities(dataset);
+            auto cityDeficits = deficitCities;
             for(auto element : cityDeficits) {
                 auto code = element.first->getInfo()->getCode();
                 auto maxDemand = dynamic_cast<City*>(element.first->getInfo())->getDeliveryDemand();
@@ -107,7 +107,7 @@ void Menu::MainMenu() {
                 NetworkPoint* info = node->getInfo();
                 std::string code = info->getCode();
                 if (code[0]=='P'){
-                    std::cout << "By removing the " << code  <<  "station: " << '\n';
+                    std::cout << "By removing the " << code  <<  " station: " << '\n';
                     removeNode(&dataset, code);
                 }
             }
@@ -154,6 +154,14 @@ void Menu::MainMenu() {
             }
             backToMainMenu();
         }
+        else if (topic_in_main_menu == 7) {
+            auto newDataSet = dataset;
+            newDataSet.prepareSuperNodes();
+            balanceNetwork(&newDataSet);
+            auto def = deficitCities;
+            showStatisticsDeficit(def,0);
+            backToMainMenu();
+        }
         else if (topic_in_main_menu == 0) break;
         else std::cout << "Error: Choose one number of the Main Menu.\n";
     }
@@ -166,7 +174,7 @@ void Menu::backToMainMenu() {
                  "[0]> Quit.\n";
     int back;
     std::string striBack;
-    while (true) {
+    while (!done) {
         back = 0;
         striBack = "";
         std::cin >> striBack;

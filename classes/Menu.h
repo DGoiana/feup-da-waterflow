@@ -16,10 +16,19 @@
 class Menu {
     bool exit = false;
     Dataset dataset;
+    std::vector<std::pair<Node *,int>> deficitCities;
+    std::vector<std::pair<Pipe *,int>> deficitPipes;
+    double maxFlow;
     void backToMainMenu();
 
 public:
-    Menu(Dataset dataset) : dataset(dataset) {};
+    Menu(Dataset dataset) : dataset(dataset) {
+        dataset.prepareSuperNodes();
+        Graph graph = dataset.getNetwork();
+        maxFlow = edmondsKarp(&graph,"SUPER_SOURCE","SUPER_SINK");
+        deficitCities = createDeficitsCities(dataset.getNetwork());
+        deficitPipes = createDeficitsPipes(dataset.getNetwork());
+    };
     void MainMenu();
 
     int DatasetMenu();

@@ -62,14 +62,14 @@ void showStatisticsDeficit(std::vector<std::pair<Node *,int>> deficits, double m
  * @param dataset dataset that has the graph
  * @return the array of pipes' deficits
  */
-std::vector<std::pair<Pipe *,int>> createDeficitsPipes(Dataset dataset);
+std::vector<std::pair<Pipe *,int>> createDeficitsPipes(Graph graph);
 
 /**
  * Creates the deficit array for Cities (Nodes)
- * @param dataset dataset that has the graph
+ * @param dataset
  * @return the array of Cities' deficits
  */
-std::vector<std::pair<Node *,int>> createDeficitsCities(Dataset dataset);
+std::vector<std::pair<Node *,int>> createDeficitsCities(Graph graph);
 
 /**
  * Removes a node from the graph (Reservoir, City or Station)
@@ -88,3 +88,26 @@ void removeNode(Dataset *dataset, std::string code);
  * @param code code of the pipe to be deleted
  */
 void removePipe(Dataset *dataset, std::string source, std::string dest);
+
+/**
+ * @brief Balance pipes' flow
+ *
+ * This algorithm redistributes the flow in outgoing reservoirs pipes.
+ * It calculates the mean of the outgoing flow and tries to redistribute the flow equally in all pipes.\n\n
+ * @param reservoir to be balanced.
+ */
+void balanceNode(Node *n);
+
+
+/**
+ * @brief Balances the flow network
+ *
+ * This algorithm tries to balance the flow network. It decreases the flow variance as well as the max difference, with a slight
+ * trade off with the max flow. It balances the reservoirs first and then it propagates the updated flow to the pumping stations.
+ * \n\n
+ *
+ * Time Complexity: O(VE²)
+ * @param dataset to be balanced.
+ */
+void balanceNetwork(Dataset *dataset);
+
