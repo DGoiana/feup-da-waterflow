@@ -111,13 +111,25 @@ void Menu::MainMenu(Dataset dataset) {
             backToMainMenu();
         }
         else if (topic_in_main_menu == 3) {
-            std::cout << "Not yet implemented" << '\n';
+            auto cityDeficits = createDeficitsCities(dataset);
+            for(auto element : cityDeficits) {
+                auto code = element.first->getInfo()->getCode();
+                auto maxDemand = dynamic_cast<City*>(element.first->getInfo())->getDeliveryDemand();
+                if(element.second != 0) {
+                    std::cout << code << " has deficit of " << element.second << '.';
+                } else {
+                    std::cout << code << " has no deficit.";
+                }
+                std::cout << " (Max Demand: " << maxDemand << ")" << '\n';
+            }
+            std::cout << "\n";
+            showStatisticsDeficit(cityDeficits,0);
+
             backToMainMenu();
         }
         else if (topic_in_main_menu == 4) {
 
             std::string reservoir;
-            int flow = 0;
             Node *foundReservoir = nullptr;
 
             while(foundReservoir == nullptr) {
@@ -133,24 +145,55 @@ void Menu::MainMenu(Dataset dataset) {
             backToMainMenu();
         }
         else if (topic_in_main_menu == 5) {
-            std::cout << "Not yet implemented" << '\n';
+
+            for (Node* node : graph.getNodeSet()) {
+                NetworkPoint* info = node->getInfo();
+                std::string code = info->getCode();
+                if (code[0]=='P'){
+                    std::cout << "By removing the " << code  <<  "station: " << '\n';
+                    removeNode(&dataset, code);
+                }
+            }
+
             backToMainMenu();
         }
         else if (topic_in_main_menu == 6) {
-            std::string city;
-            int flow = 0;
-            Node *foundCity = nullptr;
+            std::string choice;
+            int a;
+            std::cout << "Choose:\n"
+                         "0 - Pipes connected to Cities\n"
+                         "1 - Remove singular pipe\n";
+            std::cin >> choice;
+            try {
+                a = stoi(choice);
+            } catch (...){backToMainMenu();}
+            if(a == 0) {
+                for(auto node: dataset.getNetwork().getNodeSet()) {
+                    for(auto pipe: node->getPipes()) {
+                        auto orig = pipe->getOrig()->getInfo()->getCode();
+                        auto dest = pipe->getDest()->getInfo()->getCode();
+                        std::cout <<"Removing " <<  orig << " -> " << dest << '\n';
+                        removePipe(&dataset,orig,dest);
+                        std::cout << '\n';
+                    }
+                }
+            } else if (a == 1){
+                std::string orig;
+                std::string dest;
+                Pipe *foundPipe = nullptr;
 
-            while(foundCity == nullptr) {
-                std::cout << "Enter city code (Ex.: C_1): " << "\n";
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore any remaining input from previous input
-                std::getline(std::cin, city);
+                while(foundPipe == nullptr) {
+                    std::cout << "Enter reservoir code (Ex.: R_1): " << "\n";
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore any remaining input from previous input
+                    std::cout << "Origin:\n";
+                    std::getline(std::cin, orig);
+                    std::cout << "Destination:\n";
+                    std::getline(std::cin,dest);
 
-                foundCity = graph.findNode(city);
-            }
+                    foundPipe = graph.findPipe(orig,dest);
+                }
 
-            for(auto pipe : foundCity->getPipes()) {
-                flow += pipe->getFlow();
+                removePipe(&dataset, foundPipe->getOrig()->getInfo()->getCode(),foundPipe->getDest()->getInfo()->getCode());
             }
             backToMainMenu();
         }
