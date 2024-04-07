@@ -1,32 +1,41 @@
-#include "classes/Dataset.h"
-#include "classes/Edmonds_Karps.h"
+#include "classes/Dataset.cpp"
+#include "classes/Edmonds_Karps.cpp"
 #include "classes/Menu.cpp"
 #include "classes/Utils.cpp"
+#include "classes/Graph.cpp"
+#include "classes/Parser.cpp"
 #include <iostream>
 
-Dataset createSmallDataset();
-Dataset createLargeDataset();
 
 
 double maxFlow(Dataset dataset);
 
 int main() {
-    Dataset dataset = createLargeDataset();
-    dataset.prepareSuperNodes();
 
 
-    Menu menu(dataset);
+
+    Menu menu;
+    Dataset dataset;
+    Dataset* datasetPtr = nullptr; // Declare a pointer to Dataset and initialize it to nullptr
+
+    int datasetPicker = menu.DatasetMenu();
+    if (datasetPicker == 1){
+        dataset = createSmallDataset();
+        datasetPtr = &dataset; // Assign the address of dataset to datasetPtr
+        datasetPtr->prepareSuperNodes(); // Access members using -> when using pointers
+    }
+    else if (datasetPicker == 2){
+        dataset = createLargeDataset();
+        dataset.prepareSuperNodes(); // Call prepareSuperNodes directly on dataset
+        datasetPtr = &dataset; // Assign the address of dataset to datasetPtr
+    }
+
+    menu.MainMenu(dataset); // Pass dataset, not datasetPtr
+
+
 }
 
-Dataset createSmallDataset() {
-    Parser parser;
 
-    removePipe(&largeDataset, "R_13", "PS_42");
-
-    std::cout << maxFlow(largeDataset) << '\n';
-
-    return 0;
-}
 
 double maxFlow(Dataset dataset) {
 

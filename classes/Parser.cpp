@@ -1,6 +1,7 @@
 #include "Parser.h"
 #include <iostream>
 #include <fstream>
+#include <filesystem>
 
 std::vector<std::string> Parser::split(std::string line, const std::string &delimiter){
    size_t pos;
@@ -18,6 +19,7 @@ std::vector<std::string> Parser::split(std::string line, const std::string &deli
 
 
 std::list<std::vector<std::string> > Parser::readFile(const std::string &path) {
+    std::cout << std::filesystem::current_path() << '\n';
    std::ifstream file(path);
    std::string line;
    std::list<std::vector<std::string>> result;
