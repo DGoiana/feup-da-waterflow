@@ -67,8 +67,8 @@ void Menu::MainMenu(Dataset dataset) {
 
     int topic_in_main_menu;
     std::string striTemp;
+    dataset.prepareSuperNodes();
     Graph graph = dataset.getNetwork();
-
 
     double maxFlow = edmondsKarp(&graph,"SUPER_SOURCE","SUPER_SINK");
 
@@ -230,6 +230,7 @@ void Menu::backToMainMenu() {
 void Menu::dumpMaxFlowFile() {
     std::ofstream output("../maxFlowOutput.txt");
     std::vector<std::pair<std::string,int>> maxFlowCity;
+    dataset.prepareSuperNodes();
     Graph graph = dataset.getNetwork();
     double maxFlow = edmondsKarp(&graph,"SUPER_SOURCE","SUPER_SINK");
     for(auto node : graph.getNodeSet()) {
