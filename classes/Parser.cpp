@@ -1,6 +1,7 @@
 #include "Parser.h"
 #include <iostream>
 #include <fstream>
+#include <filesystem>
 
 std::vector<std::string> Parser::split(std::string line, const std::string &delimiter){
    size_t pos;

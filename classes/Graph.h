@@ -15,10 +15,22 @@ template<typename Base, typename T>
 inline bool instanceof(const T *ptr) {
     return dynamic_cast<const Base*>(ptr) != nullptr;
 }
-
+/**
+ * @brief Graph adapted to Max-Flow problems as well as implementation of various auxiliary functions to help solve the
+ * proposed problems.
+ */
 class Graph;
+
+/**
+ * @brief Node in the graph. With its Demand (for Cities) and other parameters.
+ */
 class Node;
+
+/**
+ * @brief Similar to edge, but it has a maximum capacity and flow.
+ */
 class Pipe;
+
 
 class Graph {
     private:
@@ -81,6 +93,15 @@ class Node{
         int getNum() const { return this->num; };
         void setNum(int num) { this->num = num; };
 
+        /**
+         * @brief Returns the next pipe in path
+         *
+         * At each iteration of the Edmonds-Karp algorithm, a path is created and, it needs to be stored. Then, a possible
+         * solution is to have, for each node, the next node in a given path. In the next iteration, if the node is in
+         * the path, this variable will be overriden.\n\n
+         *
+         * @return the next pipe in that path
+         */
         Pipe *getPath() const {return this->path;};
         void setPath(Pipe *path) {this->path = path;};
 
