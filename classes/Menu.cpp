@@ -3,6 +3,7 @@
 //
 
 #include "Menu.h"
+#include "Utils.h"
 
 int Menu::DatasetMenu() {
     std::cout << "\n\n ----------------------------------------------\n"
@@ -127,7 +128,7 @@ void Menu::MainMenu(Dataset dataset) {
                 foundReservoir = graph.findNode(reservoir);
             }
 
-            removeNode(dataset, reservoir);
+            removeNode(&dataset, reservoir);
 
             backToMainMenu();
         }
@@ -186,7 +187,7 @@ void Menu::backToMainMenu() {
 void Menu::dumpMaxFlowFile() {
     std::ofstream output("../maxFlowOutput.txt");
     std::vector<std::pair<std::string,int>> maxFlowCity;
-    Graph graph = dataset->getNetwork();
+    Graph graph = dataset.getNetwork();
     double maxFlow = edmondsKarp(&graph,"SUPER_SOURCE","SUPER_SINK");
     for(auto node : graph.getNodeSet()) {
         int currentFlow = 0;

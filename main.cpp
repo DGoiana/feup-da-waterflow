@@ -21,13 +21,12 @@ int main() {
     int datasetPicker = menu.DatasetMenu();
     if (datasetPicker == 1){
         dataset = createSmallDataset();
-        datasetPtr = &dataset; // Assign the address of dataset to datasetPtr
-        datasetPtr->prepareSuperNodes(); // Access members using -> when using pointers
+        dataset.prepareSuperNodes(); // Access members using -> when using pointers
     }
     else if (datasetPicker == 2){
         dataset = createLargeDataset();
         dataset.prepareSuperNodes(); // Call prepareSuperNodes directly on dataset
-        datasetPtr = &dataset; // Assign the address of dataset to datasetPtr
+         // Assign the address of dataset to datasetPtr
     }
 
     menu.MainMenu(dataset); // Pass dataset, not datasetPtr

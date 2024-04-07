@@ -11,6 +11,7 @@
 #include "Dataset.h"
 #include "Edmonds_Karps.h"
 #include <fstream>
+#include "Utils.h"
 
 class Menu {
     bool exit = false;
