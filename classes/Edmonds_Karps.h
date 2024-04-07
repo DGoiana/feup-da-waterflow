@@ -4,6 +4,11 @@
 #include "Graph.h"
 
 /**
+ * @file Edmonds_Karps.h
+ * @brief Edmonds Karp Implementation
+ */
+
+/**
  * @brief Edmonds Karp Algorithm to determine a graph's Max-Flow
  *
  * The algorithm finds a path from the source and the target using a BFS, then it augments the path, creating a new

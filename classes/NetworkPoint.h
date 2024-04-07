@@ -2,7 +2,14 @@
 #define NETWORK_POINT_H_
 
 #include <string>
-
+/**
+ * @brief SuperClass to all the different kinds of nodes present in the graph\n
+ *
+ * Pumping Station: where the flow goes through.\n
+ * Reservoir: Nodes where the flow begins (a source).\n
+ * City: Nodes where the flow ends (a sink).\n
+ *
+ */
 class NetworkPoint{
    private:
       std::string code;
