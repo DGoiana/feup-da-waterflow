@@ -12,25 +12,25 @@ void Menu::MainMenu() {
     auto graph = dataset.getNetwork();
     dataset.prepareSuperNodes();
 
-    std::cout << "\n\n ----------------------------------------------\n"
-                 "|                 Main Menu                    |\n"
-                 " ----------------------------------------------\n";
-    std::cout << "Hello, water supply manager!\n";
-    std::cout << "Select the number of the topic...\n"
-                 "[1]> Maximum Flow For City Water Distribution (2.1)\n"
-                 "[2]> Maximum Flow Stats into a File\n"
-                 "[3]> Water Sufficiency For Delivery Sites (2.2)\n"
-                 "[4]> City Water Supply Impact from Individual Reservoir Failures (3.1)\n"
-                 "[5]> Effect of Temporary Pumping Station Removal on Water Delivery (3.2)\n"
-                 "[6]> Critical Pipeline Failures Impacting City Water Supply (3.3)\n"
-                 "[7]> Balance Network (2.3)\n"
-
-                 "\n[0]> Quit\n";
-
-    int topic_in_main_menu;
-    std::string striTemp;
-
     while (!done) {
+        std::cout << "\n\n ----------------------------------------------\n"
+                     "|                 Main Menu                    |\n"
+                     " ----------------------------------------------\n";
+        std::cout << "Hello, water supply manager!\n";
+        std::cout << "Select the number of the topic...\n"
+                     "[1]> Maximum Flow For City Water Distribution (2.1)\n"
+                     "[2]> Maximum Flow Stats into a File\n"
+                     "[3]> Water Sufficiency For Delivery Sites (2.2)\n"
+                     "[4]> City Water Supply Impact from Individual Reservoir Failures (3.1)\n"
+                     "[5]> Effect of Temporary Pumping Station Removal on Water Delivery (3.2)\n"
+                     "[6]> Critical Pipeline Failures Impacting City Water Supply (3.3)\n"
+                     "[7]> Balance Network (2.3)\n"
+
+                     "\n[0]> Quit\n";
+
+        int topic_in_main_menu;
+        std::string striTemp;
+
         topic_in_main_menu = 0;
         striTemp = "";
         std::cin >> striTemp;
@@ -172,7 +172,7 @@ void Menu::MainMenu() {
 void Menu::backToMainMenu() {
     std::cout << "\n[1]> Back to Main Menu.\n"
                  "[0]> Quit.\n";
-    int back;
+    int back = 0;
     std::string striBack;
     while (!done) {
         back = 0;
@@ -184,8 +184,9 @@ void Menu::backToMainMenu() {
         catch (...) {
             back = 10;
         }
-        if (back == 1) MainMenu();
-        else if (back == 0) { done = true; break; }
+        if (back == 1) { return;}
+        else if (back == 0 || striBack.substr(0) == "0") { done = true; break; }
+        std::cout << striBack << '\n';
         std::cout << "> Invalid choice.\n"
                      "[1]> Back to Main Menu.\n"
                      "[0]> Quit.\n";
