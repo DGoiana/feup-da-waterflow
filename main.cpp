@@ -1,33 +1,41 @@
-#include "classes/Dataset.h"
-#include "classes/Edmonds_Karps.h"
+#include "classes/Dataset.cpp"
+#include "classes/Edmonds_Karps.cpp"
+#include "classes/Menu.cpp"
 #include "classes/Utils.cpp"
+#include "classes/Graph.cpp"
+#include "classes/Parser.cpp"
+#include <iostream>
+
+
 
 double maxFlow(Dataset dataset);
 
 int main() {
-    Dataset largeDataset = createLargeDataset();
-    largeDataset.prepareSuperNodes();
 
 
-     Dataset smallDataset = createSmallDataset();
-    smallDataset.prepareSuperNodes();
-    double largeMaxFlow = maxFlow(largeDataset);
-    double smallMaxFlow = maxFlow(smallDataset);
 
-    std::cout << largeMaxFlow << '\n';
+    Menu menu;
+    Dataset dataset;
+    Dataset* datasetPtr = nullptr; // Declare a pointer to Dataset and initialize it to nullptr
 
-    removePipe(&largeDataset, "R_13", "PS_42");
+    int datasetPicker = menu.DatasetMenu();
+    if (datasetPicker == 1){
+        dataset = createSmallDataset();
+        datasetPtr = &dataset; // Assign the address of dataset to datasetPtr
+        datasetPtr->prepareSuperNodes(); // Access members using -> when using pointers
+    }
+    else if (datasetPicker == 2){
+        dataset = createLargeDataset();
+        dataset.prepareSuperNodes(); // Call prepareSuperNodes directly on dataset
+        datasetPtr = &dataset; // Assign the address of dataset to datasetPtr
+    }
 
-    std::cout << maxFlow(largeDataset) << '\n';
+    menu.MainMenu(dataset); // Pass dataset, not datasetPtr
 
-    auto deficits = createDeficitsCities(largeDataset);
-    auto pipesDeficits = createDeficitsPipes(largeDataset);
 
-    //showStatisticsDeficit(deficits,largeMaxFlow);
-    //showStatisticsDeficit(pipesDeficits,largeMaxFlow);
-
-    return 0;
 }
+
+
 
 double maxFlow(Dataset dataset) {
 
