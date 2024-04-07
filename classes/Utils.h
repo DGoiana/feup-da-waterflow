@@ -74,7 +74,7 @@ std::vector<std::pair<Node *,int>> createDeficitsCities(Dataset dataset);
 /**
  * Removes a node from the graph (Reservoir, City or Station)
  *
- * Time Complexity: O(VE)
+ * Time Complexity: O(VE²)
  * @param dataset dataset that contains graph
  * @param code code of the node to be deleted
  */
@@ -83,7 +83,7 @@ void removeNode(Dataset *dataset, std::string code);
 /**
  * Removes a pipe from the graph
  *
- * Time Complexity: O(VE)
+ * Time Complexity: O(VE²)
  * @param dataset dataset that contains graph
  * @param code code of the pipe to be deleted
  */
