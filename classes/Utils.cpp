@@ -4,11 +4,11 @@
 Dataset createSmallDataset() {
     Parser parser;
 
-    std::list<std::vector<std::string> > cities = parser.parseCities("../small_dataset/Cities_Madeira.csv");
-    std::list<std::vector<std::string> > reservoirs = parser.readFile("../small_dataset/Reservoirs_Madeira.csv");
-    std::list<std::vector<std::string> > stations = parser.readFile("../small_dataset/Stations_Madeira.csv");
+    std::list<std::vector<std::string> > cities = parser.parseCities("small_dataset/Cities_Madeira.csv");
+    std::list<std::vector<std::string> > reservoirs = parser.readFile("small_dataset/Reservoirs_Madeira.csv");
+    std::list<std::vector<std::string> > stations = parser.readFile("small_dataset/Stations_Madeira.csv");
     stations.pop_back();
-    std::list<std::vector<std::string> > pipes = parser.readFile("../small_dataset/Pipes_Madeira.csv");
+    std::list<std::vector<std::string> > pipes = parser.readFile("small_dataset/Pipes_Madeira.csv");
 
     return Dataset(cities, pipes, stations, reservoirs);
 }
@@ -16,10 +16,10 @@ Dataset createSmallDataset() {
 Dataset createLargeDataset() {
     Parser parser;
 
-    std::list<std::vector<std::string> > cities = parser.parseCities("../large_dataset/Cities.csv");
-    std::list<std::vector<std::string> > reservoirs = parser.readFile("../large_dataset/Reservoir.csv");
-    std::list<std::vector<std::string> > stations = parser.readFile("../large_dataset/Stations.csv");
-    std::list<std::vector<std::string> > pipes = parser.readFile("../large_dataset/Pipes.csv");
+    std::list<std::vector<std::string> > cities = parser.parseCities("large_dataset/Cities.csv");
+    std::list<std::vector<std::string> > reservoirs = parser.readFile("large_dataset/Reservoir.csv");
+    std::list<std::vector<std::string> > stations = parser.readFile("large_dataset/Stations.csv");
+    std::list<std::vector<std::string> > pipes = parser.readFile("large_dataset/Pipes.csv");
 
     return Dataset(cities, pipes, stations, reservoirs);
 }
