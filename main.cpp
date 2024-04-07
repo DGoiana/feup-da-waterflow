@@ -2,7 +2,6 @@
 
 
 
-double maxFlow(Dataset dataset);
 int DatasetMenu();
 
 int main() {
@@ -63,12 +62,3 @@ int DatasetMenu() {
     }
     return 0;
 }
-
-
-double maxFlow(Dataset dataset) {
-
-    Graph newGraph = dataset.getNetwork();
-    int maxFlow = edmondsKarp(&(newGraph),"SUPER_SOURCE","SUPER_SINK");
-    return maxFlow;
-}
-

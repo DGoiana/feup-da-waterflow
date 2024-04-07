@@ -110,4 +110,3 @@ void balanceNode(Node *n);
  * @param dataset to be balanced.
  */
 void balanceNetwork(Dataset *dataset);
-

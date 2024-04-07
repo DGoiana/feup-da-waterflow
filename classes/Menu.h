@@ -29,9 +29,9 @@ public:
         deficitCities = createDeficitsCities(dataset.getNetwork());
         deficitPipes = createDeficitsPipes(dataset.getNetwork());
     };
+
     void MainMenu();
 
-    int DatasetMenu();
 
     void dumpMaxFlowFile();
 };
