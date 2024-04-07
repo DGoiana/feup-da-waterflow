@@ -1,10 +1,4 @@
-#include "classes/Dataset.cpp"
-#include "classes/Edmonds_Karps.cpp"
 #include "classes/Menu.cpp"
-#include "classes/Utils.cpp"
-#include "classes/Graph.cpp"
-#include "classes/Parser.cpp"
-#include <iostream>
 
 
 
@@ -21,11 +15,9 @@ int main() {
     int datasetPicker = menu.DatasetMenu();
     if (datasetPicker == 1){
         dataset = createSmallDataset();
-        dataset.prepareSuperNodes(); // Access members using -> when using pointers
     }
     else if (datasetPicker == 2){
         dataset = createLargeDataset();
-        dataset.prepareSuperNodes(); // Call prepareSuperNodes directly on dataset
          // Assign the address of dataset to datasetPtr
     }
 
