@@ -1,21 +1,29 @@
 #include "classes/Dataset.h"
 #include "classes/Edmonds_Karps.h"
+#include "classes/Menu.cpp"
 #include "classes/Utils.cpp"
+#include <iostream>
+
+Dataset createSmallDataset();
+Dataset createLargeDataset();
+
 
 double maxFlow(Dataset dataset);
 
 int main() {
-    Dataset largeDataset = createLargeDataset();
-    largeDataset.prepareSuperNodes();
+    Dataset dataset = createLargeDataset();
+    dataset.prepareSuperNodes();
 
 
-    Dataset smallDataset = createSmallDataset();
-    smallDataset.prepareSuperNodes();
+    Menu menu(dataset);
+}
 
-    double largeMaxFlow = maxFlow(largeDataset);
-    double smallMaxFlow = maxFlow(smallDataset);
+Dataset createSmallDataset() {
+    Parser parser;
 
-    balanceNetwork(&largeDataset);
+    removePipe(&largeDataset, "R_13", "PS_42");
+
+    std::cout << maxFlow(largeDataset) << '\n';
 
     return 0;
 }
